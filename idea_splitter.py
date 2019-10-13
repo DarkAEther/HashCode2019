@@ -58,8 +58,9 @@ final_xlsx.save("final_ideas.xlsx")
 final_headers = []
 
 team_headers = [x.value for x in list(team_sheet.iter_rows())[0]];
+final_headers.extend(headers[:3])  #excluding repeated headers
+final_headers.extend(headers[4:6])
 final_headers.extend(team_headers)
-final_headers.extend(headers[:6])  #excluding repeated headers
 
 join_projects.append(final_headers)   #adding final headers 
 
@@ -74,9 +75,6 @@ def check_disq(leader_email):
             else:
                 return 0
   
-
-#flag = 0 #default disqualified
-
 for row in team_sheet.iter_rows(min_row = 2,min_col = 1,max_col = 12):
     row = [x.value for x in row]
     id = []   #idea details list
@@ -86,12 +84,18 @@ for row in team_sheet.iter_rows(min_row = 2,min_col = 1,max_col = 12):
         for i in final_sheet.iter_rows(min_row =2,min_col = 1,max_col = 8):
            i = [x.value for x in i]
            if(i[-1] == row[1]): #checking for leader email equality        
-                id.extend(i[:6])  
+                id.extend(i[:3])
+                id.extend(i[4:6]) 
                 c+=1 
-        row.extend(id)
+        
+
+    else:
+        id.extend(["" for i in range(0,5)])
+
+    id.extend(row)
 
     if(flag == 1):
-            join_projects.append(row)
+            join_projects.append(id)
 
 join_xlsx.save("joined_ideas.xlsx")
 print("No. of ideas: ",c)
